@@ -17,6 +17,7 @@ set smartindent
 set tabstop=4
 set expandtab
 set shiftwidth=4
+set statusline=%!bufnr('%')
 
 inoremap jk <esc>
 
@@ -68,6 +69,13 @@ Plug 'mfussenegger/nvim-jdtls'
 Plug 'windwp/nvim-autopairs'
 Plug 'airblade/vim-gitgutter'
 
+" Plug 'preservim/nerdtree'
+Plug 'nvim-tree/nvim-web-devicons' " optional, for file icons
+Plug 'nvim-tree/nvim-tree.lua'
+
+" Toggle comments
+Plug 'terrortylor/nvim-comment'
+
 call plug#end()
 
 " Leader bind to space
@@ -110,8 +118,22 @@ nnoremap ,<space> :nohlsearch<CR>
 lua << EOF
 -- setup auto close brackets
 require("nvim-autopairs").setup {}
--- init callbacks
--- require 'callbacks'
+-- comment with 'gcc' in normal mode and 'gc' in visual mode
+require('nvim_comment').setup() 
+ 
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
+-- empty setup using defaults
+require("nvim-tree").setup{
+    view = {
+        adaptive_size = true
+        }
+}
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -255,7 +277,7 @@ require'lspconfig'.stylelint_lsp.setup{
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'rust_analyzer', 'jdtls' }
+local servers = { 'pyright', 'rust_analyzer' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -345,14 +367,14 @@ map gp :bp<cr>
 map gw :Bclose<cr>
 
 " Run Python and C files by Ctrl+h
-autocmd FileType python map <buffer> <C-h> :w<CR>:exec '!python3.11' shellescape(@%, 1)<CR>
-autocmd FileType python imap <buffer> <C-h> <esc>:w<CR>:exec '!python3.11' shellescape(@%, 1)<CR>
-
-autocmd FileType c map <buffer> <C-h> :w<CR>:exec '!gcc' shellescape(@%, 1) '-o out; ./out'<CR>
-autocmd FileType c imap <buffer> <C-h> <esc>:w<CR>:exec '!gcc' shellescape(@%, 1) '-o out; ./out'<CR>
-
-autocmd FileType sh map <buffer> <C-h> :w<CR>:exec '!bash' shellescape(@%, 1)<CR>
-autocmd FileType sh imap <buffer> <C-h> <esc>:w<CR>:exec '!bash' shellescape(@%, 1)<CR>
+" autocmd FileType python map <buffer> <C-h> :w<CR>:exec '!python3.11' shellescape(@%, 1)<CR>
+" autocmd FileType python imap <buffer> <C-h> <esc>:w<CR>:exec '!python3.11' shellescape(@%, 1)<CR>
+" 
+" autocmd FileType c map <buffer> <C-h> :w<CR>:exec '!gcc' shellescape(@%, 1) '-o out; ./out'<CR>
+" autocmd FileType c imap <buffer> <C-h> <esc>:w<CR>:exec '!gcc' shellescape(@%, 1) '-o out; ./out'<CR>
+" 
+" autocmd FileType sh map <buffer> <C-h> :w<CR>:exec '!bash' shellescape(@%, 1)<CR>
+" autocmd FileType sh imap <buffer> <C-h> <esc>:w<CR>:exec '!bash' shellescape(@%, 1)<CR>
 
 autocmd FileType python set colorcolumn=79
 
@@ -373,6 +395,8 @@ nnoremap L gt
 
 " nmap <buffer> gd <plug>(lsp-definition)  # go to definition in current window
 " nmap <buffer> gD :tab LspDefinition<cr>  # go to definition in new tab
+" nmap gd :LspDefinition<cr>
+" nmap gD :tab split<cr>:LspDefinition<cr>
 
 " Autosave plugin
 
@@ -392,8 +416,16 @@ EOF
 command CreateComponent :terminal '/Users/alexeygoloburdin/code/lms/frontend/createcomponent.py'
 
 " White colors for LSP messages in code
-set termguicolors
-hi DiagnosticError guifg=White
-hi DiagnosticWarn  guifg=White
-hi DiagnosticInfo  guifg=White
-hi DiagnosticHint  guifg=White
+" set termguicolors
+" hi DiagnosticError guifg=White
+" hi DiagnosticWarn  guifg=White
+" hi DiagnosticInfo  guifg=White
+" hi DiagnosticHint  guifg=White
+
+" NERDTree hotkeys
+nnoremap <leader>tn :NvimTreeFocus<CR>
+" nnoremap <C-n> :NERDTree<CR>
+nnoremap <leader>tt :NvimTreeToggle<CR>
+nnoremap <C-1> :NvimTreeToggle<CR>
+nnoremap <leader>tf :NvimTreeFindFile<CR>
+nnoremap <C-3> :NvimTreeFindFile<CR>

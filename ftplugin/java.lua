@@ -30,16 +30,16 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
   -- ACTION mappings
-  buf_set_keymap('n', '<leader>la', "<Cmd>lua require'jdtls'.code_action()<CR>", opts)
-  buf_set_keymap('v', '<leader>la', "<Esc><Cmd>lua require'jdtls'.code_action(true)<CR>", opts)
-  buf_set_keymap('n', '<leader>lA', "<Cmd>lua require'jdtls'.code_action(false, 'refactor')<CR>", opts)
-  buf_set_keymap('n', '<leader>lR',  '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  --buf_set_keymap('n', '<leader>la', "<Cmd>lua require'jdtls'.code_action()<CR>", opts)
+  --buf_set_keymap('v', '<leader>la', "<Esc><Cmd>lua require'jdtls'.code_action(true)<CR>", opts)
+  --buf_set_keymap('n', '<leader>lA', "<Cmd>lua require'jdtls'.code_action(false, 'refactor')<CR>", opts)
+  --buf_set_keymap('n', '<leader>lR',  '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- Few language severs support these three
-  buf_set_keymap('n', '<leader>fF',  '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  --buf_set_keymap('n', '<leader>fF',  '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   -- Diagnostics mapping
-  buf_set_keymap('n', '<leader>ll', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '<leader>ln', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<leader>lN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  --buf_set_keymap('n', '<leader>ll', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  --buf_set_keymap('n', '<leader>ln', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  --buf_set_keymap('n', '<leader>lN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
 
   buf_set_keymap("n", "<leader>uo", "<Cmd>lua require'jdtls'.organize_imports()<CR>", opts)
   buf_set_keymap("n", "<leader>ut", "<Cmd>lua require'jdtls'.test_class()<CR>", opts)
