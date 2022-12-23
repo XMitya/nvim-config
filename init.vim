@@ -34,6 +34,10 @@ Plug 'morhetz/gruvbox'  " colorscheme gruvbox
 Plug 'mhartington/oceanic-next'  " colorscheme OceanicNext
 Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 Plug 'ayu-theme/ayu-vim'
+" Iintellij IDEA theme
+Plug 'briones-gabriel/darcula-solid.nvim'
+Plug 'rktjmp/lush.nvim'
+
 
 Plug 'xiyaowong/nvim-transparent'
 
@@ -62,6 +66,9 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Convenient floating terminal window
 "Plug 'voldikss/vim-floaterm'
 
+" Window picker
+Plug 's1n7ax/nvim-window-picker', { 'tag': 'v1.*' }
+
 Plug 'ray-x/lsp_signature.nvim'
 
 " Java LSP
@@ -76,7 +83,13 @@ Plug 'nvim-tree/nvim-tree.lua'
 " Toggle comments
 Plug 'terrortylor/nvim-comment'
 
+" Scala
+Plug 'scalameta/nvim-metals'
+Plug 'mfussenegger/nvim-dap'
+
 call plug#end()
+
+" set t_Co=256
 
 " Leader bind to space
 let mapleader = ","
@@ -97,6 +110,7 @@ let g:prettier#quickfix_enabled = 0
 let g:sneak#label = 1
 
 colorscheme gruvbox
+" colorscheme darcula-solid
 "colorscheme OceanicNext
 "let g:material_terminal_italics = 1
 " variants: default, palenight, ocean, lighter, darker, default-community,
@@ -104,9 +118,12 @@ colorscheme gruvbox
 "           darker-community
 "let g:material_theme_style = 'darker'
 "colorscheme material
+" hi Normal ctermbg=NONE
 if (has('termguicolors'))
   set termguicolors
 endif
+hi Normal guibg=#1d1d1d
+" set termguicolors
 
 " variants: mirage, dark, dark
 "let ayucolor="mirage"
@@ -114,19 +131,32 @@ endif
 
 " turn off search highlight
 nnoremap ,<space> :nohlsearch<CR>
+nnoremap <C-s> :hi Normal guibg=#1d1d1d<CR>
 
 lua << EOF
 -- setup auto close brackets
 require("nvim-autopairs").setup {}
 -- comment with 'gcc' in normal mode and 'gc' in visual mode
 require('nvim_comment').setup() 
+
+-- setup winpicker
+local picker = require'window-picker'
+picker.setup({
+  selection_chars = '12345',
+  fg_color = '#ededed',
+  other_win_hl_color = '#264653',
+})
+vim.keymap.set("n", "<leader>w", function()
+    local picked_window_id = picker.pick_window() or vim.api.nvim_get_current_win()
+    vim.api.nvim_set_current_win(picked_window_id)
+end, { desc = "Pick a window" })
  
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- set termguicolors to enable highlight groups
-vim.opt.termguicolors = true
+-- vim.opt.termguicolors = true
 
 -- empty setup using defaults
 require("nvim-tree").setup{
@@ -194,7 +224,7 @@ local nvim_lsp = require('lspconfig')
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-  print('On attach!')
+-- print('On attach!')
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
@@ -408,9 +438,18 @@ require("auto-save").setup(
 EOF
 
 " Telescope fzf plugin
-" lua << EOF
-" require('telescope').load_extension('fzf')
-" EOF
+lua << EOF
+local telescope = require('telescope')
+telescope.setup {
+	defaults = {
+		path_display={"smart"} 
+	}
+}
+telescope.load_extension('fzf')
+EOF
+
+" Telescope search in current buffer
+nnoremap <leader>b :Telescope current_buffer_fuzzy_find fuzzy=false case_mode=ignore_case<CR>
 
 " Fast component creating for React app
 command CreateComponent :terminal '/Users/alexeygoloburdin/code/lms/frontend/createcomponent.py'
@@ -426,6 +465,20 @@ command CreateComponent :terminal '/Users/alexeygoloburdin/code/lms/frontend/cre
 nnoremap <leader>tn :NvimTreeFocus<CR>
 " nnoremap <C-n> :NERDTree<CR>
 nnoremap <leader>tt :NvimTreeToggle<CR>
-nnoremap <C-1> :NvimTreeToggle<CR>
+nnoremap <C-1> :NvimTreeFocus<CR>
 nnoremap <leader>tf :NvimTreeFindFile<CR>
 nnoremap <C-3> :NvimTreeFindFile<CR>
+
+" tab navigation
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <C-Right> :tabnext<CR>
+
+" window navigation
+nnoremap ˙ <C-w>h
+nnoremap ∆ <C-w>j
+nnoremap ˚ <C-w>k
+nnoremap ¬ <C-w>l
+
+" save session
+nnoremap ß :mksession! .nvim.session<CR>
+nnoremap œ :mksession! .nvim.session<CR>:qa<CR>

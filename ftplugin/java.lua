@@ -4,6 +4,8 @@ local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
+  require('jdtls').setup_dap({ hotcodereplace = 'auto' })
+
   -- Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -37,9 +39,9 @@ local on_attach = function(client, bufnr)
   -- Few language severs support these three
   --buf_set_keymap('n', '<leader>fF',  '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   -- Diagnostics mapping
-  --buf_set_keymap('n', '<leader>ll', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  --buf_set_keymap('n', '<leader>ln', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  --buf_set_keymap('n', '<leader>lN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', '<leader>ll', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  -- buf_set_keymap('n', '<leader>ln', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  -- buf_set_keymap('n', '<leader>lN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
 
   buf_set_keymap("n", "<leader>uo", "<Cmd>lua require'jdtls'.organize_imports()<CR>", opts)
   buf_set_keymap("n", "<leader>ut", "<Cmd>lua require'jdtls'.test_class()<CR>", opts)
@@ -47,6 +49,8 @@ local on_attach = function(client, bufnr)
   buf_set_keymap("v", "<leader>ue", "<Esc><Cmd>lua require('jdtls').extract_variable(true)<CR>", opts)
   buf_set_keymap("n", "<leader>ue", "<Cmd>lua require('jdtls').extract_variable()<CR>", opts)
   buf_set_keymap("v", "<leader>um", "<Esc><Cmd>lua require('jdtls').extract_method(true)<CR>", opts)
+  buf_set_keymap("n", "<leader>uu", "<Esc><Cmd>lua require('jdtls').super_implementation()<CR>", opts)
+  buf_set_keymap("n", "<leader>ur", "<Esc><Cmd>lua require('jdtls').update_project_config()<CR>", opts)
   --[[
   require "lsp_signature".on_attach({
       bind = true, -- This is mandatory, otherwise border config won't get registered.
