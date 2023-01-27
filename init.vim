@@ -87,6 +87,9 @@ Plug 'terrortylor/nvim-comment'
 Plug 'scalameta/nvim-metals'
 Plug 'mfussenegger/nvim-dap'
 
+" Highlight variable under cursor
+Plug 'RRethy/vim-illuminate'
+
 call plug#end()
 
 " set t_Co=256
@@ -136,6 +139,13 @@ nnoremap <C-s> :hi Normal guibg=#1d1d1d<CR>
 lua << EOF
 -- setup auto close brackets
 require("nvim-autopairs").setup {}
+-- Auto add parenthesis on auto complete
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local cmp = require('cmp')
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
 -- comment with 'gcc' in normal mode and 'gc' in visual mode
 require('nvim_comment').setup() 
 
@@ -184,8 +194,10 @@ cmp.setup {
     end,
   },
   mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
+ --   ['<C-p>'] = cmp.mapping.select_prev_item(),
+ --   ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<Up>'] = cmp.mapping.select_prev_item(),
+    ['<Down>'] = cmp.mapping.select_next_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
@@ -482,3 +494,7 @@ nnoremap ¬ <C-w>l
 " save session
 nnoremap ß :mksession! .nvim.session<CR>
 nnoremap œ :mksession! .nvim.session<CR>:qa<CR>
+
+" move on highlited variables
+nnoremap <C-n> :lua require('illuminate').goto_next_reference(wrap)<CR>
+nnoremap <C-p> :lua require('illuminate').goto_prev_reference(wrap)<CR>
